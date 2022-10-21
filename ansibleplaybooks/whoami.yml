@@ -1,0 +1,9 @@
+- hosts: all
+  tasks:
+  - name: simple whoami command
+    command: whoami
+#    to execute the playbook as root remove the uncomment next line
+#    become: yes
+    register: command_output  
+  - debug:
+      var: command_output

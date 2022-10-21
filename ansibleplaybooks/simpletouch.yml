@@ -1,0 +1,7 @@
+- hosts: all
+  tasks:
+  - name: Creating an empty file
+    become: yes
+    file:
+      path: "/root/ansible.test"
+      state: touch
