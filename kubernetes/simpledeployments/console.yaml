@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: console
+  name: <%=instance.name%> 
 spec:
   containers:
   - args:
     - sleep
     - 30m
     image: busybox
-    name: console
+    name: <%=instance.name%>
