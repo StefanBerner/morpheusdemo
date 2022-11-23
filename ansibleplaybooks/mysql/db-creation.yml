@@ -1,0 +1,23 @@
+- hosts: all
+  vars:
+    mysql_root: "{{ lookup('cypher','secret=secret/mysql_root') }}"
+  tasks:
+  - name: Create DB
+    become: yes
+    mysql_db:
+      name: scrm-test
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      state: present
+  - name: Grant DB permissions to scrm user
+    mysql_user:
+      state: present
+      name: scrm
+      password: 'Morpheus123!'
+      host: '192.168.2.0/255.255.255.0'
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      priv:
+        'scrm-test.*': 'ALL,GRANT'

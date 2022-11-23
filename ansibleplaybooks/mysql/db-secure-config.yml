@@ -1,0 +1,55 @@
+- hosts: all
+  vars:
+    mysql_root: "{{ lookup('cypher','secret=secret/mysql_root') }}"
+  tasks:
+  - name: Set mysql root passwd
+    become: yes
+    mysql_user:
+      name: root
+      password: "{{mysql_root}}"
+      state: present
+  - name: ensure that the test database is absent
+    become: yes
+    mysql_db:
+      name: test
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      state: absent
+  - name: ensure that anonymous users are absent
+    become: yes
+    mysql_user:
+      name: ''
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      state: absent
+      host_all: true
+  - name: ensure that root can only login from localhost
+    become: yes
+    mysql_query:
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      query:
+       - DELETE
+          FROM mysql.user
+          WHERE USER='root'
+            AND HOST NOT IN ('localhost',
+                            '127.0.0.1',
+                            '::1')
+  - name: get all users that have no authentication_string on MySQL version >= 5.7.6 or Mariadb version >= 10.4.0
+    become: yes
+    mysql_query:
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      query:
+        - SELECT GROUP_CONCAT(QUOTE(USER), '@', QUOTE(HOST) SEPARATOR ', ') AS users
+          FROM mysql.user
+          WHERE (length(authentication_string)=0
+                OR authentication_string="")
+            AND USER NOT IN ('mysql.sys',
+                            'mysqlxsys',
+                            'mariadb.sys');
+

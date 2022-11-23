@@ -1,0 +1,10 @@
+- hosts: all
+  tasks:
+  - name: MySQL DB including dependencies
+    become: yes
+    apt:
+      pkg:
+        - mysql-server
+        - python3-mysqldb
+        - python3-requests
+      state: latest 
