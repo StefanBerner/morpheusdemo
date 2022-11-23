@@ -1,6 +1,6 @@
 - hosts: all
   tasks:
-  - name: MySQL DB including dependencies
+  - name: Install MySQL DB including dependencies
     become: yes
     apt:
       pkg:
@@ -8,3 +8,21 @@
         - python3-mysqldb
         - python3-requests
       state: latest 
+  - name: replace-bind
+    become: yes
+    replace:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf 
+        regexp: '^bind.*$'
+        replace: 'bind-address = *'
+        backup: yes
+  - name: replace-mysqlx-bind
+    become: yes
+    replace:
+        path: /etc/mysql/mysql.conf.d/mysqld.cnf 
+        regexp: '^mysqlx-bind.*$'
+        replace: 'mysqlx-bind-address = *'
+        backup: yes
+  - name: Restart service httpd, in all cases
+    service:
+      name: mysql
+      state: restarted
