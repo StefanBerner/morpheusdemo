@@ -1,0 +1,9 @@
+- hosts: all
+  vars:
+    file_to_touch: "{{ morpheus['customOptions']['filetotouch'] }}"
+  tasks:
+  - name: Creating an empty file
+    become: yes
+    file:
+      path: "{{file_to_touch}}"
+      state: touch
