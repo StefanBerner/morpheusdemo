@@ -33,8 +33,7 @@
   - name: MySQL DB including dependencies on RHEL based systems
     become: yes
     yum:
-      name:
-        - epel-release
+      name: epel-release
       state: latest
     when: (ansible_facts['distribution'] == "CentOS") or (ansible_facts['distribution'] == "RedHat")
   - name: MySQL DB including dependencies on RHEL based systems
