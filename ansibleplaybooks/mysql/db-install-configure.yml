@@ -8,6 +8,7 @@
         - python3-mysqldb
         - python3-requests
       state: latest 
+    when: (ansible_facts['distribution'] == "Ubuntu") or (ansible_facts['distribution'] == "Debian")
   - name: replace-bind
     become: yes
     replace:
@@ -15,6 +16,7 @@
         regexp: '^bind.*$'
         replace: 'bind-address = *'
         backup: yes
+    when: (ansible_facts['distribution'] == "Ubuntu") or (ansible_facts['distribution'] == "Debian")      
   - name: replace-mysqlx-bind
     become: yes
     replace:
@@ -22,7 +24,25 @@
         regexp: '^mysqlx-bind.*$'
         replace: 'mysqlx-bind-address = *'
         backup: yes
+    when: (ansible_facts['distribution'] == "Ubuntu") or (ansible_facts['distribution'] == "Debian")      
   - name: Restart service httpd, in all cases
     service:
       name: mysql
       state: restarted
+    when: (ansible_facts['distribution'] == "Ubuntu") or (ansible_facts['distribution'] == "Debian")
+  - name: MySQL DB including dependencies on RHEL based systems
+    become: yes
+    yum:
+      name:
+        - epel-release
+        - mysql-server
+        - python3-mysql
+        - python3-requests
+      state: latest
+    when: (ansible_facts['distribution'] == "CentOS") or (ansible_facts['distribution'] == "RedHat")
+  - name: enable mysqld
+    service:
+      name: mysqld
+      enabled: true
+      state: restarted     
+    when: (ansible_facts['distribution'] == "CentOS") or (ansible_facts['distribution'] == "RedHat")    
