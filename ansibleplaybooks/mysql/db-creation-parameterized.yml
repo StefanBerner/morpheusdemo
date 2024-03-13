@@ -1,0 +1,26 @@
+- hosts: all
+  vars:
+    mysql_root: "{{ morpheus['customOptions']['mysqlpasswd'] }}"
+    mysql_database: "{{ morpheus['customOptions']['mysqldatabse'] }}"  
+    mysql_user: "{{ morpheus['customOptions']['mysqluser'] }}"
+    mysql_user_password: "{{ morpheus['customOptions']['mysqluserpassword'] }}" 
+  tasks:
+  - name: Create DB
+    become: yes
+    mysql_db:
+      name: "{{ mysql_database}}"
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      state: present
+  - name: Grant DB permissions to scrm user
+    mysql_user:
+      state: present
+      name: " {{ mysql_user }}"
+      password: "{{ mysql_user_password }}"
+#      host: '192.168.2.0/255.255.255.0'
+      login_host: 'localhost'
+      login_user: 'root'
+      login_password: "{{mysql_root}}"
+      priv:
+        '"{{ mysql_database }}".*': 'ALL,GRANT'
