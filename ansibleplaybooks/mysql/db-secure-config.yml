@@ -1,6 +1,7 @@
 - hosts: all
   vars:
-    mysql_root: "{{ lookup('cypher','secret=secret/mysql_root') }}"
+    #    mysql_root: "{{ lookup('cypher','secret=secret/mysql_root') }}"
+    mysql_root: "{{ morpheus['customOptions']['mysqlpasswd'] }}"
   tasks:
   - name: Set mysql root passwd
     become: yes
