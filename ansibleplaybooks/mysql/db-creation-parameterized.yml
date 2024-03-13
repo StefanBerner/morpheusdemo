@@ -22,5 +22,4 @@
       login_host: 'localhost'
       login_user: 'root'
       login_password: "{{mysql_root}}"
-      priv:
-        '"{{ mysql_database }}".*': 'ALL,GRANT'
+      priv: {{ mysql_database + '.*': 'ALL,GRANT' }}
