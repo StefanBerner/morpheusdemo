@@ -26,19 +26,19 @@
       login_password: "{{mysql_root}}"
       state: absent
       host_all: true
-  - name: ensure that root can only login from localhost
-    become: yes
-    community.mysql.mysql_query:
-      login_host: 'localhost'
-      login_user: 'root'
-      login_password: "{{mysql_root}}"
-      query:
-       - DELETE
-          FROM mysql.user
-          WHERE USER='root'
-            AND HOST NOT IN ('localhost',
-                            '127.0.0.1',
-                            '::1')
+#  - name: ensure that root can only login from localhost
+#    become: yes
+#    community.mysql.mysql_query:
+#      login_host: 'localhost'
+#      login_user: 'root'
+#      login_password: "{{mysql_root}}"
+#      query:
+#       - DELETE
+#          FROM mysql.user
+#          WHERE USER='root'
+#            AND HOST NOT IN ('localhost',
+#                            '127.0.0.1',
+#                            '::1')
 #  - name: get all users that have no authentication_string on MySQL version >= 5.7.6 or Mariadb version >= 10.4.0
 #    become: yes
 #    mysql_query:
